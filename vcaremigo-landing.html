@@ -1,0 +1,939 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>vCareMigo — Elderly & Family Support System</title>
+  <meta name="description" content="vCareMigo empowers elderly individuals and their families through real-time location sharing, SOS emergency alerts, health document storage, and multilingual AI assistance." />
+  <meta property="og:title" content="vCareMigo — Elderly & Family Support System" />
+  <meta property="og:description" content="Real-time care, safety, and connection for seniors and their families." />
+  <meta property="og:type" content="website" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy:       #0B1E3D;
+      --navy-mid:   #122649;
+      --teal:       #3BBFB2;
+      --teal-light: #E6F7F6;
+      --gold:       #E8A450;
+      --offwhite:   #F7F9FC;
+      --white:      #FFFFFF;
+      --text:       #1C2B3A;
+      --muted:      #5A6A7A;
+      --border:     #DDE4EC;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      color: var(--text);
+      background: var(--offwhite);
+      font-size: 16px;
+      line-height: 1.65;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--navy);
+      padding: 0 5%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 64px;
+    }
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+    }
+    .nav-logo-icon {
+      width: 36px;
+      height: 36px;
+      background: var(--teal);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .nav-logo-icon svg { width: 20px; height: 20px; }
+    .nav-logo-text {
+      font-family: 'Lora', serif;
+      font-weight: 700;
+      font-size: 1.15rem;
+      color: var(--white);
+      letter-spacing: -0.01em;
+    }
+    .nav-links {
+      display: flex;
+      gap: 28px;
+      list-style: none;
+    }
+    .nav-links a {
+      color: rgba(255,255,255,0.75);
+      text-decoration: none;
+      font-size: 0.875rem;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--teal); }
+
+    /* ── PAGES ── */
+    .page { display: none; }
+    .page.active { display: block; }
+
+    /* ── HERO ── */
+    .hero {
+      background: var(--navy);
+      padding: 90px 5% 80px;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: radial-gradient(ellipse at 70% 50%, rgba(59,191,178,0.12) 0%, transparent 65%);
+      pointer-events: none;
+    }
+    .hero-inner {
+      max-width: 760px;
+      position: relative;
+    }
+    .hero-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(59,191,178,0.15);
+      border: 1px solid rgba(59,191,178,0.35);
+      color: var(--teal);
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 5px 14px;
+      border-radius: 100px;
+      margin-bottom: 28px;
+    }
+    .hero-eyebrow span { width: 6px; height: 6px; background: var(--teal); border-radius: 50%; display: inline-block; }
+    .hero h1 {
+      font-family: 'Lora', serif;
+      font-size: clamp(2.2rem, 5vw, 3.4rem);
+      font-weight: 700;
+      color: var(--white);
+      line-height: 1.2;
+      letter-spacing: -0.02em;
+      margin-bottom: 22px;
+    }
+    .hero h1 em {
+      font-style: normal;
+      color: var(--teal);
+    }
+    .hero-sub {
+      color: rgba(255,255,255,0.65);
+      font-size: 1.08rem;
+      max-width: 560px;
+      margin-bottom: 40px;
+      line-height: 1.7;
+    }
+    .hero-cta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      align-items: center;
+    }
+    .btn-primary {
+      background: var(--teal);
+      color: var(--navy);
+      padding: 13px 28px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 0.93rem;
+      text-decoration: none;
+      border: none;
+      cursor: pointer;
+      transition: opacity 0.2s, transform 0.15s;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .btn-primary:hover { opacity: 0.88; transform: translateY(-1px); }
+    .btn-outline {
+      border: 1.5px solid rgba(255,255,255,0.3);
+      color: rgba(255,255,255,0.8);
+      padding: 13px 28px;
+      border-radius: 8px;
+      font-weight: 500;
+      font-size: 0.93rem;
+      text-decoration: none;
+      transition: border-color 0.2s, color 0.2s;
+    }
+    .btn-outline:hover { border-color: var(--teal); color: var(--teal); }
+
+    /* heartbeat SVG line */
+    .hero-pulse {
+      margin-top: 60px;
+      opacity: 0.35;
+    }
+    .hero-pulse svg { width: 100%; max-width: 640px; height: 48px; }
+    .pulse-line {
+      stroke: var(--teal);
+      stroke-width: 2;
+      fill: none;
+      stroke-dasharray: 1200;
+      stroke-dashoffset: 1200;
+      animation: drawPulse 2.5s ease forwards 0.5s;
+    }
+    @keyframes drawPulse {
+      to { stroke-dashoffset: 0; }
+    }
+
+    /* ── TRUST STRIP ── */
+    .trust-strip {
+      background: var(--white);
+      border-bottom: 1px solid var(--border);
+      padding: 20px 5%;
+    }
+    .trust-strip-inner {
+      max-width: 960px;
+      margin: 0 auto;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 28px;
+      justify-content: center;
+      align-items: center;
+    }
+    .trust-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--muted);
+      font-size: 0.82rem;
+      font-weight: 500;
+    }
+    .trust-item svg { width: 16px; height: 16px; color: var(--teal); flex-shrink: 0; }
+
+    /* ── SECTION COMMONS ── */
+    section { padding: 80px 5%; }
+    .section-label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+      color: var(--teal);
+      margin-bottom: 10px;
+    }
+    .section-title {
+      font-family: 'Lora', serif;
+      font-size: clamp(1.6rem, 3.5vw, 2.3rem);
+      font-weight: 700;
+      color: var(--navy);
+      line-height: 1.25;
+      letter-spacing: -0.02em;
+      margin-bottom: 14px;
+    }
+    .section-desc {
+      color: var(--muted);
+      font-size: 1rem;
+      max-width: 520px;
+      line-height: 1.7;
+      margin-bottom: 52px;
+    }
+    .centered { text-align: center; }
+    .centered .section-desc { margin-left: auto; margin-right: auto; }
+
+    /* ── FEATURES ── */
+    .features { background: var(--offwhite); }
+    .features-grid {
+      max-width: 1040px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 24px;
+    }
+    .feature-card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 30px;
+      transition: box-shadow 0.2s, transform 0.2s;
+    }
+    .feature-card:hover { box-shadow: 0 8px 32px rgba(11,30,61,0.08); transform: translateY(-2px); }
+    .feature-icon {
+      width: 46px;
+      height: 46px;
+      background: var(--teal-light);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 18px;
+    }
+    .feature-icon svg { width: 22px; height: 22px; color: var(--teal); }
+    .feature-card h3 {
+      font-family: 'Lora', serif;
+      font-weight: 600;
+      font-size: 1.05rem;
+      color: var(--navy);
+      margin-bottom: 8px;
+    }
+    .feature-card p {
+      color: var(--muted);
+      font-size: 0.9rem;
+      line-height: 1.65;
+    }
+
+    /* ── HOW IT WORKS ── */
+    .how { background: var(--white); }
+    .how-inner { max-width: 900px; margin: 0 auto; }
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 40px;
+      counter-reset: step;
+    }
+    .step { position: relative; }
+    .step-num {
+      font-family: 'Lora', serif;
+      font-size: 3rem;
+      font-weight: 700;
+      color: var(--teal-light);
+      line-height: 1;
+      margin-bottom: 12px;
+    }
+    .step h3 {
+      font-weight: 600;
+      font-size: 0.97rem;
+      color: var(--navy);
+      margin-bottom: 6px;
+    }
+    .step p { color: var(--muted); font-size: 0.88rem; line-height: 1.6; }
+
+    /* ── ROLES ── */
+    .roles { background: var(--navy); }
+    .roles .section-title { color: var(--white); }
+    .roles .section-desc { color: rgba(255,255,255,0.55); }
+    .roles-grid {
+      max-width: 900px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 20px;
+    }
+    .role-card {
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 14px;
+      padding: 28px;
+      background: rgba(255,255,255,0.04);
+    }
+    .role-tag {
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      border-radius: 100px;
+      margin-bottom: 16px;
+      display: inline-block;
+    }
+    .tag-senior { background: rgba(232,164,80,0.2); color: var(--gold); }
+    .tag-family { background: rgba(59,191,178,0.2); color: var(--teal); }
+    .tag-admin  { background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.7); }
+    .role-card h3 { color: var(--white); font-weight: 600; margin-bottom: 8px; }
+    .role-card p { color: rgba(255,255,255,0.5); font-size: 0.88rem; line-height: 1.6; }
+
+    /* ── TECH STRIP ── */
+    .tech { background: var(--offwhite); padding: 56px 5%; }
+    .tech-inner { max-width: 960px; margin: 0 auto; }
+    .tech-label { text-align: center; color: var(--muted); font-size: 0.8rem; font-weight: 500; letter-spacing: 0.04em; text-transform: uppercase; margin-bottom: 28px; }
+    .tech-badges {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+    }
+    .tech-badge {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 100px;
+      padding: 7px 18px;
+      font-size: 0.83rem;
+      font-weight: 500;
+      color: var(--text);
+    }
+
+    /* ── DEVELOPER NOTE ── */
+    .devnote {
+      background: var(--teal-light);
+      border-top: 3px solid var(--teal);
+      border-bottom: 3px solid var(--teal);
+      padding: 52px 5%;
+      text-align: center;
+    }
+    .devnote-inner { max-width: 640px; margin: 0 auto; }
+    .devnote p { color: var(--navy); font-size: 1rem; line-height: 1.7; margin-bottom: 20px; }
+    .devnote strong { font-weight: 600; }
+
+    /* ── CONTACT ── */
+    .contact { background: var(--white); }
+    .contact-inner { max-width: 680px; margin: 0 auto; text-align: center; }
+    .contact-card {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 16px;
+      margin-top: 36px;
+    }
+    .contact-item {
+      background: var(--offwhite);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 16px 24px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.9rem;
+      color: var(--text);
+    }
+    .contact-item svg { width: 16px; height: 16px; color: var(--teal); }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--navy);
+      padding: 36px 5%;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+    }
+    footer p { color: rgba(255,255,255,0.45); font-size: 0.82rem; }
+    footer a { color: rgba(255,255,255,0.55); text-decoration: none; font-size: 0.82rem; }
+    footer a:hover { color: var(--teal); }
+    .footer-links { display: flex; gap: 20px; flex-wrap: wrap; }
+
+    /* ── PRIVACY PAGE ── */
+    .privacy-hero {
+      background: var(--navy);
+      padding: 64px 5% 52px;
+    }
+    .privacy-hero-inner { max-width: 760px; }
+    .privacy-hero h1 {
+      font-family: 'Lora', serif;
+      font-size: clamp(1.8rem, 4vw, 2.6rem);
+      font-weight: 700;
+      color: var(--white);
+      margin-bottom: 12px;
+    }
+    .privacy-hero p { color: rgba(255,255,255,0.55); font-size: 0.9rem; }
+
+    .privacy-body {
+      background: var(--offwhite);
+      padding: 60px 5%;
+    }
+    .privacy-content {
+      max-width: 760px;
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 52px;
+    }
+    .privacy-content h2 {
+      font-family: 'Lora', serif;
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: var(--navy);
+      margin: 40px 0 14px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid var(--teal-light);
+    }
+    .privacy-content h2:first-of-type { margin-top: 0; }
+    .privacy-content h3 {
+      font-size: 0.97rem;
+      font-weight: 600;
+      color: var(--navy);
+      margin: 24px 0 8px;
+    }
+    .privacy-content p {
+      color: var(--muted);
+      font-size: 0.93rem;
+      line-height: 1.75;
+      margin-bottom: 14px;
+    }
+    .privacy-content ul {
+      padding-left: 20px;
+      margin-bottom: 14px;
+    }
+    .privacy-content ul li {
+      color: var(--muted);
+      font-size: 0.93rem;
+      line-height: 1.7;
+      margin-bottom: 6px;
+    }
+    .privacy-content strong { color: var(--text); font-weight: 600; }
+    .privacy-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 18px 0;
+      font-size: 0.88rem;
+    }
+    .privacy-table th {
+      background: var(--offwhite);
+      color: var(--navy);
+      font-weight: 600;
+      text-align: left;
+      padding: 11px 14px;
+      border: 1px solid var(--border);
+    }
+    .privacy-table td {
+      padding: 11px 14px;
+      border: 1px solid var(--border);
+      color: var(--muted);
+    }
+    .privacy-table tr:hover td { background: var(--offwhite); }
+    .privacy-notice {
+      background: rgba(59,191,178,0.08);
+      border-left: 4px solid var(--teal);
+      border-radius: 0 8px 8px 0;
+      padding: 16px 20px;
+      margin: 20px 0;
+    }
+    .privacy-notice p { margin: 0; color: var(--navy); }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 640px) {
+      .nav-links { display: none; }
+      .hero { padding: 60px 5% 52px; }
+      section { padding: 56px 5%; }
+      .privacy-content { padding: 28px 20px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .pulse-line { animation: none; stroke-dashoffset: 0; }
+      * { transition: none !important; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-logo" href="#" onclick="showPage('home')">
+    <div class="nav-logo-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+      </svg>
+    </div>
+    <span class="nav-logo-text">vCareMigo</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#features" onclick="showPage('home')">Features</a></li>
+    <li><a href="#how" onclick="showPage('home')">How It Works</a></li>
+    <li><a href="#contact" onclick="showPage('home')">Contact</a></li>
+    <li><a href="#" onclick="showPage('privacy')">Privacy Policy</a></li>
+  </ul>
+</nav>
+
+<!-- ═══════════════════════ HOME PAGE ═══════════════════════ -->
+<div id="page-home" class="page active">
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-inner">
+      <div class="hero-eyebrow"><span></span> Elderly & Family Support System</div>
+      <h1>Care that stays <em>close</em>,<br>no matter the distance.</h1>
+      <p class="hero-sub">
+        vCareMigo connects seniors and families through real-time location sharing, one-tap SOS emergency alerts, secure health documents, and a multilingual AI assistant — all in one accessible app.
+      </p>
+      <div class="hero-cta">
+        <a class="btn-primary" href="#features">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="12 8 16 12 12 16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+          Explore Features
+        </a>
+        <a class="btn-outline" href="#" onclick="showPage('privacy')">Privacy Policy</a>
+      </div>
+      <div class="hero-pulse">
+        <svg viewBox="0 0 640 48" xmlns="http://www.w3.org/2000/svg">
+          <path class="pulse-line" d="M0,24 L80,24 L100,24 L120,4 L140,44 L160,14 L175,34 L190,24 L260,24 L280,24 L300,6 L316,42 L330,18 L342,30 L356,24 L440,24 L460,24 L476,10 L492,38 L506,20 L516,28 L528,24 L640,24"/>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <!-- TRUST STRIP -->
+  <div class="trust-strip">
+    <div class="trust-strip-inner">
+      <div class="trust-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        End-to-End Encrypted
+      </div>
+      <div class="trust-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        Real-Time GPS Tracking
+      </div>
+      <div class="trust-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        Telugu, Hindi & English AI
+      </div>
+      <div class="trust-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        One-Tap SOS Alerts
+      </div>
+      <div class="trust-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+        iOS & Android
+      </div>
+    </div>
+  </div>
+
+  <!-- FEATURES -->
+  <section class="features" id="features">
+    <div style="max-width:1040px;margin:0 auto;">
+      <p class="section-label centered">What We Offer</p>
+      <h2 class="section-title centered">Everything your family needs,<br>in one place.</h2>
+      <p class="section-desc centered">Built from the ground up for seniors — large text, high contrast, voice-first, and always responsive to what matters most.</p>
+      <div class="features-grid">
+
+        <div class="feature-card">
+          <div class="feature-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          </div>
+          <h3>Real-Time Location Sharing</h3>
+          <p>Continuous GPS tracking lets family members know exactly where their senior is — on a live map, at all times, with battery-optimized background monitoring.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+          </div>
+          <h3>SOS Emergency System</h3>
+          <p>One tap sends an instant alert with the senior's live location to every linked family member. Escalation logic and location snapshots are logged automatically.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          </div>
+          <h3>In-App Family Chat</h3>
+          <p>Encrypted messaging with image and voice note support. All media is stored securely on Amazon S3. Read receipts keep everyone in sync.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+          </div>
+          <h3>Health Documents Hub</h3>
+          <p>Upload and organize prescriptions, medical reports, and ID documents in one secure, permission-based storage vault — accessible only by authorized family members.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          </div>
+          <h3>Shared Reminders & Calendar</h3>
+          <p>Medication reminders, doctor appointments, and daily tasks — synced across all family devices with push notifications so nothing is ever missed.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/></svg>
+          </div>
+          <h3>Multilingual AI Assistant</h3>
+          <p>A RAG-powered AI model understands Telugu, Hindi, and English. Seniors can ask questions via voice or text and get contextual, simple, senior-friendly answers.</p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section class="how" id="how">
+    <div class="how-inner">
+      <p class="section-label centered">Simple by Design</p>
+      <h2 class="section-title centered">Set up in minutes.<br>Peace of mind that lasts.</h2>
+      <p class="section-desc centered">vCareMigo is built for families who need reliability, not complexity.</p>
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">01</div>
+          <h3>Download & Register</h3>
+          <p>Sign up via Google or Apple in seconds. Each family member gets a role — Senior, Family Member, or Admin — with the right access.</p>
+        </div>
+        <div class="step">
+          <div class="step-num">02</div>
+          <h3>Connect Your Family Group</h3>
+          <p>Link accounts into a shared family group. Location, reminders, documents, and chat are all shared within this private circle.</p>
+        </div>
+        <div class="step">
+          <div class="step-num">03</div>
+          <h3>Stay Connected Daily</h3>
+          <p>Real-time location updates, medication reminders, and family messages keep everyone close — even when you're far apart.</p>
+        </div>
+        <div class="step">
+          <div class="step-num">04</div>
+          <h3>Emergency? One Tap.</h3>
+          <p>In any emergency, the SOS button instantly notifies every family member with location and a snapshot. Help arrives faster.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ROLES -->
+  <section class="roles">
+    <div style="max-width:900px;margin:0 auto;">
+      <p class="section-label">Built for Everyone in the Family</p>
+      <h2 class="section-title">One app. Three roles.<br>Complete care coverage.</h2>
+      <p class="section-desc">Each user type gets a tailored experience that fits exactly what they need to do.</p>
+      <div class="roles-grid">
+        <div class="role-card">
+          <span class="role-tag tag-senior">Senior</span>
+          <h3>Stay Independent</h3>
+          <p>Large-text UI, voice commands, one-tap SOS, medication reminders, and a multilingual AI companion designed for ease and dignity.</p>
+        </div>
+        <div class="role-card">
+          <span class="role-tag tag-family">Family Member</span>
+          <h3>Stay Informed</h3>
+          <p>Live location map, instant SOS notifications, shared calendar, family chat, and access to all health documents — from anywhere in the world.</p>
+        </div>
+        <div class="role-card">
+          <span class="role-tag tag-admin">Admin</span>
+          <h3>Stay in Control</h3>
+          <p>Web-based panel to manage users, handle support tickets, review subscription statuses, and escalate incidents with full audit trails.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TECH -->
+  <div class="tech">
+    <div class="tech-inner">
+      <p class="tech-label">Powered by</p>
+      <div class="tech-badges">
+        <span class="tech-badge">React Native / Flutter</span>
+        <span class="tech-badge">Next.js</span>
+        <span class="tech-badge">PostgreSQL</span>
+        <span class="tech-badge">Amazon S3</span>
+        <span class="tech-badge">Google Maps API</span>
+        <span class="tech-badge">RAG AI Model</span>
+        <span class="tech-badge">Razorpay / Stripe</span>
+        <span class="tech-badge">End-to-End Encryption</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- DEVELOPER NOTE -->
+  <div class="devnote">
+    <div class="devnote-inner">
+      <p>vCareMigo is developed by <strong>Codedale (Haniva Software Solutions Pvt Ltd)</strong>, a digital product studio based in Hyderabad, Telangana. The app is operated by <strong>Taksha Infotech Inc</strong>, registered in the United States.</p>
+      <p>The app is currently in active development and will be available on the Apple App Store and Google Play Store. For early access enquiries, reach out to our team below.</p>
+      <a class="btn-primary" href="#contact" style="display:inline-flex;margin-top:8px;">Get in Touch</a>
+    </div>
+  </div>
+
+  <!-- CONTACT -->
+  <section class="contact" id="contact">
+    <div class="contact-inner">
+      <p class="section-label">Contact</p>
+      <h2 class="section-title">Have questions?<br>We're here to help.</h2>
+      <p class="section-desc" style="margin:0 auto 0;">For support, privacy concerns, or general enquiries about vCareMigo, reach out to us directly.</p>
+      <div class="contact-card">
+        <div class="contact-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+          team@codedale.tech
+        </div>
+        <div class="contact-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 2.24h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+          +91 7075631155
+        </div>
+        <div class="contact-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          Hyderabad, Telangana, India
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <p>© 2026 Taksha Infotech Inc. App developed by Haniva Software Solutions Pvt Ltd (Codedale).</p>
+    <div class="footer-links">
+      <a href="#" onclick="showPage('privacy')">Privacy Policy</a>
+      <a href="#contact" onclick="showPage('home')">Contact</a>
+      <a href="mailto:team@codedale.tech">team@codedale.tech</a>
+    </div>
+  </footer>
+
+</div><!-- end home page -->
+
+
+<!-- ═══════════════════════ PRIVACY PAGE ═══════════════════════ -->
+<div id="page-privacy" class="page">
+
+  <div class="privacy-hero">
+    <div class="privacy-hero-inner">
+      <div class="hero-eyebrow" style="margin-bottom:20px;"><span></span> Legal</div>
+      <h1>Privacy Policy</h1>
+      <p>Effective Date: June 8, 2026 &nbsp;·&nbsp; Last Updated: June 8, 2026 &nbsp;·&nbsp; Operated by Taksha Infotech Inc</p>
+    </div>
+  </div>
+
+  <div class="privacy-body">
+    <div class="privacy-content">
+
+      <h2>Introduction</h2>
+      <p>vCareMigo is an elderly and family support system developed by Taksha Infotech Inc. We are committed to protecting the privacy and personal data of every user — seniors, family members, and administrators — who interacts with our platform.</p>
+      <p>This Privacy Policy explains what data we collect, how we use it, how we store it, and what rights you have over your information. By using vCareMigo, you agree to the practices described in this policy.</p>
+
+      <h2>Who We Are</h2>
+      <p>vCareMigo is operated by <strong>Taksha Infotech Inc</strong>, registered in the United States.</p>
+      <p><strong>Contact:</strong> team@codedale.tech &nbsp;|&nbsp; +91 7075631155</p>
+
+      <h2>Information We Collect</h2>
+
+      <h3>1. Account & Identity Information</h3>
+      <p>When you register on vCareMigo, we collect your name, phone number, email address, profile photo, and role type (Senior / Family Member / Admin). Authentication is handled via Google or Apple sign-in with OTP verification.</p>
+
+      <h3>2. Location Data</h3>
+      <p>vCareMigo uses continuous background GPS tracking to share a senior's real-time location with authorized family members. This includes live coordinates, location history, and location snapshots triggered during SOS events. Location data is only visible to users within the same family group.</p>
+
+      <h3>3. Communication Data</h3>
+      <p>Messages, images, and voice notes exchanged through the in-app chat are encrypted end-to-end and stored securely on Amazon S3. Read statuses are tracked to improve communication reliability.</p>
+
+      <h3>4. Health & Document Data</h3>
+      <p>Users may upload medical reports, prescriptions, and identity documents to the Central Storage (Documents Hub). These files are stored on Amazon S3 with permission-based access controls. Only authorized family members or the senior themselves can access these documents.</p>
+
+      <h3>5. Reminder & Calendar Data</h3>
+      <p>We collect information about medications, appointments, tasks, and scheduled events that users add to the shared reminder and calendar system.</p>
+
+      <h3>6. Device & Usage Data</h3>
+      <p>We collect device identifiers, operating system information, app version, push notification tokens, and usage logs for error tracking, performance monitoring, and customer support purposes.</p>
+
+      <h3>7. Payment & Subscription Data</h3>
+      <p>Subscription and billing information is processed through Razorpay or Stripe. vCareMigo does not store raw card or banking credentials. Payment processors handle data under their own privacy policies.</p>
+
+      <h2>How We Use Your Information</h2>
+      <p>We use your data solely to provide, maintain, and improve the vCareMigo experience. Specifically:</p>
+      <ul>
+        <li>To authenticate and manage your account securely</li>
+        <li>To enable real-time GPS location sharing between seniors and family members</li>
+        <li>To power the SOS emergency system, including instant alerts and location snapshots</li>
+        <li>To deliver push notifications for reminders, SOS events, chats, and check-ins</li>
+        <li>To store and retrieve health documents and media files</li>
+        <li>To provide multilingual AI assistance (Telugu, Hindi, English) via our RAG model</li>
+        <li>To manage subscriptions, renewals, and billing</li>
+        <li>To resolve support tickets through the Admin Panel</li>
+        <li>To monitor app performance and fix bugs</li>
+      </ul>
+      <p><strong>We do not sell, rent, or share your personal data with third parties for advertising or marketing purposes.</strong></p>
+
+      <h2>Location Data — Special Notice</h2>
+      <div class="privacy-notice">
+        <p>Because vCareMigo involves continuous background location tracking, we want to be fully transparent about how this data is handled.</p>
+      </div>
+      <ul>
+        <li>Location tracking is <strong>on by default</strong> for Senior accounts once enabled by the account holder or an authorized family member</li>
+        <li>Family members can only view location data of seniors who have explicitly granted access</li>
+        <li>Location data is not shared with any third party outside the family group</li>
+        <li>You may disable background location permissions at any time through your device settings, though this will affect core app functionality</li>
+      </ul>
+
+      <h2>SOS Emergency System</h2>
+      <p>When an SOS is triggered, vCareMigo immediately shares the senior's current location, a location snapshot, and an alert notification with all linked family members. This data is logged for safety and support purposes. SOS event logs are retained for a reasonable period to assist with incident review.</p>
+
+      <h2>Data Storage & Security</h2>
+      <ul>
+        <li>All user data is stored on <strong>Amazon S3</strong> with server-side encryption</li>
+        <li>All in-app communications are <strong>end-to-end encrypted</strong></li>
+        <li>Authentication uses <strong>token-based secure sessions</strong> with defined token lifecycles</li>
+        <li>Role-based access controls ensure that only authorized users can view sensitive data</li>
+        <li>We conduct regular security audits covering tokens, roles, and storage encryption</li>
+      </ul>
+      <p>While we take every reasonable measure to protect your data, no system is completely immune to risk. We encourage users to keep their login credentials secure and to report any suspicious activity to team@codedale.tech.</p>
+
+      <h2>Third-Party Services</h2>
+      <p>vCareMigo integrates with the following third-party services to power core features:</p>
+      <table class="privacy-table">
+        <thead>
+          <tr><th>Service</th><th>Purpose</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Google Maps API</td><td>Real-time GPS tracking and location display</td></tr>
+          <tr><td>Amazon S3</td><td>Secure file and media storage</td></tr>
+          <tr><td>Google / Apple Sign-In</td><td>Authentication</td></tr>
+          <tr><td>Razorpay / Stripe</td><td>Subscription billing and payments</td></tr>
+          <tr><td>RAG AI Model</td><td>Multilingual voice and text assistance</td></tr>
+        </tbody>
+      </table>
+      <p>Each of these providers operates under their own privacy policy. We recommend reviewing them independently.</p>
+
+      <h2>Data Retention</h2>
+      <p>We retain your data for as long as your account is active or as needed to provide services. If you delete your account, your personal data will be removed within 30 days, except where retention is required for legal compliance or ongoing support obligations.</p>
+      <p>Health documents and SOS event logs may be retained for a longer period at the request of the account holder or their authorized family members.</p>
+
+      <h2>Children's Privacy</h2>
+      <p>vCareMigo is designed for elderly adults and their adult family members. We do not knowingly collect data from individuals under the age of 13. If you believe a minor has registered on our platform, please contact us immediately at team@codedale.tech.</p>
+
+      <h2>Your Rights</h2>
+      <p>Depending on your location and applicable law, you may have the right to:</p>
+      <ul>
+        <li>Access the personal data we hold about you</li>
+        <li>Correct inaccurate or incomplete data</li>
+        <li>Request deletion of your account and associated data</li>
+        <li>Withdraw consent for location tracking or data processing</li>
+        <li>Download a copy of your data (data portability)</li>
+      </ul>
+      <p>To exercise any of these rights, contact us at <strong>team@codedale.tech</strong>. We will respond within 15 business days.</p>
+
+      <h2>Multilingual AI Assistant</h2>
+      <p>vCareMigo's RAG-based AI assistant processes voice commands and text queries in Telugu, Hindi, and English to assist seniors with reminders, health logs, and emergency guidance. Queries processed by the AI are used only to generate contextual responses and improve accuracy. Voice data is not stored permanently unless explicitly saved by the user.</p>
+
+      <h2>Changes to This Policy</h2>
+      <p>We may update this Privacy Policy from time to time. When we do, we will revise the "Last Updated" date at the top of this page and notify users via push notification or email for material changes. Continued use of vCareMigo after any update constitutes acceptance of the revised policy.</p>
+
+      <h2>Contact Us</h2>
+      <p>For privacy-related questions, concerns, or requests:</p>
+      <p>
+        <strong>Taksha Infotech Inc</strong><br>
+        United States<br>
+        <strong>Email:</strong> team@codedale.tech<br>
+        <strong>Phone:</strong> +91 7075631155
+      </p>
+
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <p>© 2026 Taksha Infotech Inc. App developed by Haniva Software Solutions Pvt Ltd (Codedale).</p>
+    <div class="footer-links">
+      <a href="#" onclick="showPage('home')">← Back to Home</a>
+      <a href="mailto:team@codedale.tech">team@codedale.tech</a>
+    </div>
+  </footer>
+
+</div><!-- end privacy page -->
+
+<script>
+  function showPage(name) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById('page-' + name).classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  // Handle hash routing
+  function handleHash() {
+    if (window.location.hash === '#privacy') {
+      showPage('privacy');
+    }
+  }
+  window.addEventListener('hashchange', handleHash);
+  handleHash();
+</script>
+</body>
+</html>
